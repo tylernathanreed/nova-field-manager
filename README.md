@@ -2,6 +2,11 @@
 
 This package provides the convenience of not having to include the class path of each individual field in your resource class declaration. A new `Field` facade will be created, where you can defer all field creation through.
 
+[![Latest Stable Version](https://poser.pugx.org/reedware/nova-field-manager/v/stable)](https://packagist.org/packages/reedware/nova-field-manager)
+[![Latest Unstable Version](https://poser.pugx.org/reedware/nova-field-manager/v/unstable)](https://packagist.org/packages/reedware/nova-field-manager)
+[![Total Downloads](https://poser.pugx.org/reedware/nova-field-manager/downloads)](https://packagist.org/packages/reedware/nova-field-manager)
+[![License](https://poser.pugx.org/reedware/nova-field-manager/license)](https://packagist.org/packages/reedware/nova-field-manager)
+
 ## Installation
 
 Require this package with composer.
