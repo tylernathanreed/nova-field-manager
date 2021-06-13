@@ -36,7 +36,7 @@ return [
 	'belongsToMany'       => \Laravel\Nova\Fields\BelongsToMany::class,
 	'hasMany'             => \Laravel\Nova\Fields\HasMany::class,
 	'hasOne'              => \Laravel\Nova\Fields\HasOne::class,
-	'morphedByMany'       => \Laravel\Nova\Fields\MorhpedByMany::class,
+	'morphedByMany'       => \Laravel\Nova\Fields\MorphedByMany::class,
 	'morphMany'           => \Laravel\Nova\Fields\MorphMany::class,
 	'morphOne'            => \Laravel\Nova\Fields\MorphOne::class,
 	'morphTo'             => \Laravel\Nova\Fields\MorphTo::class,
