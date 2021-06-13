@@ -53,7 +53,7 @@ class ResourceParameterGuesser implements Guesser
         $singular = Str::studly(Str::singular($name));
 
         // Perform a backtrace
-        $results = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 6);
+        $results = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 8);
 
         // Search for the field method
         $method = Arr::last($results, function($trace) {
