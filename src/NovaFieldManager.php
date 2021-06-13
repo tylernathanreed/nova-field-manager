@@ -3,12 +3,21 @@
 namespace Reedware\NovaFieldManager;
 
 use Closure;
-use InvalidArgumentException;
 use Illuminate\Support\Traits\Macroable;
+use InvalidArgumentException;
+use Laravel\Nova\Contracts\RelatableField;
+use Reedware\NovaFieldManager\Contracts\Guesser;
 
 class NovaFieldManager
 {
 	use Macroable;
+
+    /**
+     * The guesser implementation for the resource parameter.
+     *
+     * @var \Reedware\NovaFieldManager\Contracts\Guesser
+     */
+    protected $guesser;
 
 	/**
 	 * The field types that can be constructed.
@@ -24,9 +33,10 @@ class NovaFieldManager
 	 *
 	 * @return $this
 	 */
-	public function __construct($fields)
+	public function __construct(Guesser $guesser, $fields)
 	{
-		$this->fields = $fields;
+		$this->guesser = $guesser;
+        $this->fields = $fields;
 	}
 
 	/**
@@ -54,9 +64,47 @@ class NovaFieldManager
 			throw new InvalidArgumentException("Unable to create field type [{$type}] because class [{$class}] does not exist.");
 		}
 
+        // If the field is an instance, tweak the parameters
+        if(is_subclass_of($class, RelatableField::class)) {
+            $parameters = $this->prepareResourceParameter($class, $parameters);
+        }
+
 		// Create and return the new field
 		return $class::make(...$parameters);
 	}
+
+    /**
+     * Prepares the specified parameters to provide the resource parameter for the given class.
+     *
+     * @param  string  $class
+     * @param  array   $parameters
+     *
+     * @return array
+     */
+    protected function prepareResourceParameter($class, $parameters)
+    {
+        // Determine the resource parameter index
+        $index = $this->guesser->guessIndex($class);
+
+        // If we don't need to prepare anything, return the parameters as-is
+        if(is_null($index) || isset($parameters[$index])) {
+            return $parameters;
+        }
+
+        // Nullify missing intermediate parameters
+        for($i = 1; $i < $index; $i++) {
+            $parameters[$i] = $parameters[$i] ?? null;
+        }
+
+        // Guess the resource class
+        $resource = $this->guesser->guessResource($class, $parameters);
+
+        // Apply the resource parameter
+        $parameters[$index] = $resource;
+
+        // Return the modified parameters
+        return $parameters;
+    }
 
 	/**
 	 * Calls the specified macro and returns its result.

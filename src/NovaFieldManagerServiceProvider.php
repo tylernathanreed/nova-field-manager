@@ -3,6 +3,7 @@
 namespace Reedware\NovaFieldManager;
 
 use Illuminate\Support\ServiceProvider;
+use Reedware\NovaFieldManager\Contracts\Guesser;
 
 class NovaFieldManagerServiceProvider extends ServiceProvider
 {
@@ -23,6 +24,9 @@ class NovaFieldManagerServiceProvider extends ServiceProvider
         // Merge the nova field configuration
         $this->mergeNovaFieldConfiguration();
 
+        // Register the resource parameter guesser
+        $this->registerResourceParameterGuesser();
+
         // Register the nova field manager
         $this->registerNovaFieldManager();
     }
@@ -42,6 +46,16 @@ class NovaFieldManagerServiceProvider extends ServiceProvider
     }
 
     /**
+     * Registers the resource parameter guesser.
+     *
+     * @return void
+     */
+    protected function registerResourceParameterGuesser()
+    {
+        $this->app->singleton(Guesser::class, ResourceParameterGuesser::class);
+    }
+
+    /**
      * Registers the nova field manager.
      *
      * @return void
@@ -50,7 +64,7 @@ class NovaFieldManagerServiceProvider extends ServiceProvider
     {
         // Register the nova field manager
         $this->app->singleton(NovaFieldManager::class, function($app) {
-            return new NovaFieldManager($app['config']['nova-fields']);
+            return new NovaFieldManager($app[Guesser::class], $app['config']['nova-fields']);
         });
 
         // Provide a short-hand alias
